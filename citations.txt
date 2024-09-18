@@ -1,0 +1,4 @@
+[1] https://docs.opencv.org/4.6.0/da/d6a/tutorial_trackbar.html Accessed on 9/17/2024
+[2] https://www.tutorialspoint.com/how-to-create-a-trackbar-as-the-hsv-color-palette-using-opencv-python Accessed on 9/18/2024
+
+Bilateral  Filter
