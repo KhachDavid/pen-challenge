@@ -12,12 +12,10 @@ class DepthAndColorAligner:
         self.config = rs.config()
         self.clipping_distance_in_meters = clipping_distance_in_meters
         self.clipping_distance = None
-
         # Get device product line for setting a supporting resolution
         pipeline_wrapper = rs.pipeline_wrapper(self.pipeline)
         pipeline_profile = self.config.resolve(pipeline_wrapper)
         self.device = pipeline_profile.get_device()
-
         found_rgb = False
         for s in self.device.sensors:
             if s.get_info(rs.camera_info.name) == 'RGB Camera':
@@ -43,11 +41,12 @@ class DepthAndColorAligner:
     def __enter__(self):
         # Start streaming
         self.profile = self.pipeline.start(self.config)
+        prf = self.profile.get_stream(rs.stream.color)
+        self.intrinsics = prf.as_video_stream_profile().get_intrinsics()
 
         # Get the depth sensor's depth scale
         depth_sensor = self.profile.get_device().first_depth_sensor()
         depth_scale = depth_sensor.get_depth_scale()
-        print("Depth Scale is:", depth_scale)
 
         # Calculate clipping distance based on scale
         self.clipping_distance = self.clipping_distance_in_meters / depth_scale
@@ -62,15 +61,15 @@ class DepthAndColorAligner:
         aligned_frames = self.align.process(frames)
 
         # Get aligned frames
-        aligned_depth_frame = aligned_frames.get_depth_frame()  # aligned_depth_frame is a 640x480 depth image
+        self.aligned_depth_frame = aligned_frames.get_depth_frame()  # aligned_depth_frame is a 640x480 depth image
         color_frame = aligned_frames.get_color_frame()
 
         # Validate that both frames are valid
-        if not aligned_depth_frame or not color_frame:
+        if not self.aligned_depth_frame or not color_frame:
             return None, None
 
         # Convert depth and color frames to numpy arrays
-        depth_image = np.asanyarray(aligned_depth_frame.get_data())
+        depth_image = np.asanyarray(self.aligned_depth_frame.get_data())
         color_image = np.asanyarray(color_frame.get_data())
 
         return depth_image, color_image

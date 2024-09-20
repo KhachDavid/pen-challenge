@@ -73,7 +73,7 @@ try:
         # Validate that both frames are valid
         if not aligned_depth_frame or not color_frame:
             continue
-
+        
         depth_image = np.asanyarray(aligned_depth_frame.get_data())
         color_image = np.asanyarray(color_frame.get_data())
 
