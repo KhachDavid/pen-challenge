@@ -68,9 +68,10 @@ def main():
             # Find the rotation matrix using align_vectors function
             rot, rssd, sens = R.align_vectors(robot_normal, camera_normal, return_sensitivity=True)
 
+            ########## Begin_##########
             # Compute the translation vector t using the formula t = P_centroid - R * Q_centroid
             translation = np.subtract(robot_centroid, rot.apply(camera_centroid))
-
+            ########## End_Citation ##########
             print("Rotation Matrix (R):", rot.as_matrix())
             print("Translation Vector (t):", translation)
 
@@ -112,7 +113,7 @@ def main():
                     x, y, z = robot_coords
 
                     # Move the waist first based on the x and y coordinates
-                    waist_angle = math.degrees(math.atan2(y, x))  # Calculate waist angle from x and y
+                    waist_angle = math.degrees(math.atan2(y, x)) 
                     r.release()
                     print(f"Setting Waist Angle to: {waist_angle}")
                     r.set_joint_position('waist', waist_angle)
