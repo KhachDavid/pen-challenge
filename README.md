@@ -16,3 +16,7 @@ Calibration can be run using the following command:
 python3 main.py -c
 ```
 More setup instructions can be found in the **Who Stole My Pen_.pdf** file
+
+# Demo
+
+[Demo](demo.mp4)
