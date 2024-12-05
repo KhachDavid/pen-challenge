@@ -1,22 +1,44 @@
 import numpy as np
+import random
 
 class Calibration:
-    def __init__(self):
-        pass
+    def __init__(self, robot):
+        self.robot = robot
 
-    def xyz_points(self):
-        return [
-            [0.25053898729581003, 0.0, 0.17224371775927283],
-            [0.001537271734312069, -0.2505342710106243, 0.17224371775927283],
-            [0.10428814401228312, -0.17644047410530536, 0.27539286005752917],
-            [-0.18572911515241255, -0.12658820774784532, 0.24176333128626717],
-            [0.08876948474830666, -0.2445403876535686, 0.10029161585319935],
-            [0.08997345642211813, -0.24785706455749065, 0.1782108041870852],
-            [0.18100195208772119, -0.1546863463041391, 0.13410943763268826],
-            [-0.02664902435027796, -0.1593817550415019, 0.21051268548385135],
+    def random_joint_positions(self):
+        # Randomly generate valid joint positions for all joints (waist, shoulder, elbow, wrist_angle)
+        waist_angle = random.uniform(0, -90)           # Waist limits
+        shoulder_angle = random.uniform(-55, 25)        # Shoulder limits
+        elbow_angle = random.uniform(-30, 40)            # Elbow limits
+        wrist_angle = random.uniform(-100, 123)           # Wrist angle limits
 
-            [0.05343258161327636, -0.15227327326990703, 0.21108583212965548],
-            [0.06611348251014393, -0.18841156622293814, 0.08345965470956768],
-            [0.06862968064574754, -0.19558227957302637, 0.09724254620637052],
-            [0.06291836775885662, -0.17930606229702276, 0.07938637909278944]
-        ]
+        return {
+            'waist': waist_angle,
+            'shoulder': shoulder_angle,
+            'elbow': elbow_angle,
+            'wrist_angle': wrist_angle
+        }
+
+    def move_and_record_xyz(self, num_positions=100):
+        xyz_data = []
+
+        for i in range(num_positions):
+            # Generate random positions for all joints
+            joint_positions = self.random_joint_positions()
+
+            # Move the robot by setting each joint to its new position
+            for joint, angle in joint_positions.items():
+                self.robot.set_joint_position(joint, angle)
+                print(f"Moving {joint} to {angle:.2f} degrees")
+
+            # After all joints have been set, get the resulting XYZ position
+            xyz = self.robot.get_xyz()
+            xyz_data.append(xyz)
+            print(f"Position {i+1}/{num_positions} - XYZ: {xyz}")
+
+        return xyz_data
+
+    def get_xyz_data(self):
+        # Perform calibration and collect 100 XYZ points by adjusting multiple joints
+        xyz_points = self.move_and_record_xyz(num_positions=100)
+        return xyz_points

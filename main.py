@@ -20,8 +20,8 @@ def main():
         with DepthAndColorAligner(args, clipping_distance_in_meters=1) as aligner:
             #while camera_coordinates == None or 0.0 in camera_coordinates or -0.0 in camera_coordinates:
             cam.setup()
-            calibrate = Calibration()
-            robot_points = calibrate.xyz_points()
+            calibrate = Calibration(robot=r)
+            robot_points = calibrate.get_xyz_data()
             camera_points = []
             #while True:
             for point in robot_points:
@@ -94,7 +94,7 @@ def main():
         rotation_matrix = data['rotation_matrix']
         translation_vector = data['translation_vector']
 
-        r.go_home()
+        r.go_sleep()
         r.release()
         with DepthAndColorAligner(args, clipping_distance_in_meters=1.8) as aligner:
             camera_coordinates = None
@@ -115,7 +115,7 @@ def main():
                     # Move the waist first based on the x and y coordinates
                     waist_angle = math.degrees(math.atan2(y, x)) 
                     r.release()
-                    print(f"Setting Waist Angle to: {waist_angle}")
+                    #print(f"Setting Waist Angle to: {waist_angle}")
                     r.set_joint_position('waist', waist_angle)
 
                     # Move the robot to the new x, y, z coordinates
@@ -124,7 +124,7 @@ def main():
                         STATE == "GRIPPERS_CLOSED"
                         r.set_xyz([x, y, z])
                         r.grasp()
-                        break
+                        #break
                     else:
                         STATE == "GRIPPERS_OPEN"
                         r.release()
