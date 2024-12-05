@@ -19,4 +19,5 @@ More setup instructions can be found in the **Who Stole My Pen_.pdf** file
 
 # Demo
 
-[Demo](demo.mp4)
+<video src="https://github.com/user-attachments/assets/38ef4672-6e11-487c-9c62-48af6a810cb1">
+</video>
